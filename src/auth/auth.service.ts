@@ -11,22 +11,29 @@ export class AuthService {
   constructor(private jwtService: JwtService) {}
   
   async register(createAuthDto: CreateAuthDto) {
-    const exists = this.users.find(u => u.email === createAuthDto.email);
+    const email = createAuthDto.email.trim().toLowerCase();
+
+    if (email.endsWith('.ru')) {
+      throw new BadRequestException('Registration from .ru email addresses is not allowed');
+    }
+
+    const exists = this.users.find(u => u.email === email);
     if (exists) throw new BadRequestException('Email is already exists');
 
     const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
-    const newUser = { 
-      id: Date.now(), 
-      email: createAuthDto.email, 
-      password: hashedPassword 
+    const newUser = {
+      id: Date.now(),
+      email,
+      password: hashedPassword,
     };
-    
+
     this.users.push(newUser);
     return { id: newUser.id, email: newUser.email };
   }
 
   async login(dto: CreateAuthDto) {
-    const user = this.users.find(u => u.email === dto.email);
+    const email = dto.email.trim().toLowerCase();
+    const user = this.users.find(u => u.email === email);
     if (!user || !(await bcrypt.compare(dto.password, user.password!))) {
       throw new UnauthorizedException('Invalid username or password');
     }
