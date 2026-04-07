@@ -12,7 +12,7 @@ export class AuthService {
   
   async register(createAuthDto: CreateAuthDto) {
     const exists = this.users.find(u => u.email === createAuthDto.email);
-    if (exists) throw new BadRequestException('Email is already registered');
+    if (exists) throw new BadRequestException('Email is already exists');
 
     const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
     const newUser = { 
@@ -33,13 +33,5 @@ export class AuthService {
 
     const payload = { sub: user.id, email: user.email };
     return { access_token: this.jwtService.sign(payload) };
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
