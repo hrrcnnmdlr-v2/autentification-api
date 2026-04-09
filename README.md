@@ -23,76 +23,98 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A simple NestJS authentication app with static UI pages for register, login and profile.
 
-## Project setup
+## Environment setup
 
-```bash
-$ npm install
+Create a `.env` file in `authentification_api/` with the following values:
+
+```env
+JWT_SECRET=supersecretkey123
+JWT_EXPIRES_IN=1h
 ```
 
-## Compile and run the project
+- `JWT_SECRET` is used to sign JWT access tokens.
+- `JWT_EXPIRES_IN` controls token expiration.
+
+## Install dependencies
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cd authentification_api
+npm install
 ```
 
-## Run tests
+## Run the app
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+Then open:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- `http://localhost:3000/` — home page
+- `http://localhost:3000/register.html` — registration page
+- `http://localhost:3000/login.html` — login page
+- `http://localhost:3000/profile.html` — protected profile page
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## How it works
+
+- register: `POST /auth/register`
+  - accepts `{ email, password }`
+  - rejects `.ru` email addresses
+- login: `POST /auth/login`
+  - returns `{ access_token }`
+- profile: `GET /auth/me`
+  - requires `Authorization: Bearer <token>`
+
+The frontend stores the token in `localStorage` and uses it to access `/auth/me` from `profile.html`.
+
+## Frontend pages
+
+Static UI files are served from the `public/` folder:
+
+- `public/index.html`
+- `public/register.html`
+- `public/login.html`
+- `public/profile.html`
+- `public/styles.css`
+
+## Notes
+
+- User data is stored in memory only.
+- This app is meant for local development and demo purposes.
+- Tests are not modified in this documentation update.
+
+## Tests
+
+The project includes e2e coverage for auth behavior. Run:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run test:e2e
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Current test cases include:
 
-## Resources
+- `POST Register - SUCCESS`
+- `POST Register - FAIL duplicate email`
+- `POST Register - FAIL ru email address`
+- `POST Register - FAIL short password`
+- `POST Register - FAIL invalid email format`
+- `POST Login - SUCCESS`
+- `POST Login - FAIL wrong password`
+- `POST Login - FAIL non-existing user`
+- `GET Token - SUCCESS`
+- `GET Token - FAIL missing token`
+- `GET Token - FAIL invalid token`
+- `GET Token - FAIL expired token`
 
-Check out a few resources that may come in handy when working with NestJS:
+## Commands
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npm install
+npm run start:dev
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+For now, keep the existing test files unchanged and use this README for setup and usage instructions.
