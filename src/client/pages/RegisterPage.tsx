@@ -1,5 +1,16 @@
-import { useState } from 'react';
-import { TextInput, PasswordInput, Button, Paper, Title, Container, Stack, Text, Anchor, Group } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Container,
+  Stack,
+  Text,
+  Anchor,
+  Group,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
@@ -17,6 +28,13 @@ export default function RegisterPage() {
     },
   });
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/profile');
+    }
+  }, [navigate]);
+  
   const handleSubmit = async (values: typeof form.values) => {
     setLoading(true);
     try {
@@ -42,25 +60,47 @@ export default function RegisterPage() {
   return (
     <Container size={420} my={40}>
       <Group mb="md">
-        <Anchor size="sm" onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        <Anchor
+          size="sm"
+          onClick={() => navigate('/')}
+          style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+        >
           ← Back to Menu
         </Anchor>
       </Group>
 
       <Paper withBorder shadow="md" p={30} radius="md">
-        <Title ta="center" mb="lg">Create Account</Title>
-        
+        <Title ta="center" mb="lg">
+          Create Account
+        </Title>
+
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            <TextInput label="Email" placeholder="your@email.com" required {...form.getInputProps('email')} />
-            <PasswordInput label="Password" placeholder="Min 6 characters" required {...form.getInputProps('password')} />
-            <Button type="submit" fullWidth loading={loading}>Sign Up</Button>
+            <TextInput
+              label="Email"
+              placeholder="your@email.com"
+              required
+              {...form.getInputProps('email')}
+            />
+            <PasswordInput
+              label="Password"
+              placeholder="Min 6 characters"
+              required
+              {...form.getInputProps('password')}
+            />
+            <Button type="submit" fullWidth loading={loading}>
+              Sign Up
+            </Button>
           </Stack>
         </form>
 
         <Text c="dimmed" size="sm" ta="center" mt="md">
           Already have an account?{' '}
-          <Anchor size="sm" component="button" onClick={() => navigate('/login')}>
+          <Anchor
+            size="sm"
+            component="button"
+            onClick={() => navigate('/login')}
+          >
             Login here
           </Anchor>
         </Text>

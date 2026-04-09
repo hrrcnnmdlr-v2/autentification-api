@@ -8,10 +8,9 @@ import {
   Stack,
   Text,
   Anchor,
-  ActionIcon,
   Group,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
@@ -20,7 +19,16 @@ import api from '../api/axios';
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const form = useForm({ initialValues: { email: '', password: '' } });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/profile');
+    }
+  }, [navigate]);
+
   const handleSubmit = async (values: typeof form.values) => {
     setLoading(true);
     try {
@@ -44,7 +52,11 @@ export default function LoginPage() {
   return (
     <Container size={420} my={40}>
       <Group mb="md">
-        <Anchor size="sm" onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        <Anchor
+          size="sm"
+          onClick={() => navigate('/')}
+          style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+        >
           ← Back to Menu
         </Anchor>
       </Group>
