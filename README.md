@@ -1,29 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Authentification API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-A simple NestJS authentication app with static UI pages for register, login and profile.
+A simple NestJS authentication app with a React frontend powered by Vite and Mantine UI.
 
 ## Environment setup
 
@@ -40,50 +17,47 @@ JWT_EXPIRES_IN=1h
 ## Install dependencies
 
 ```bash
-cd authentification_api
 npm install
 ```
 
 ## Run the app
 
+To run both the NestJS backend and Vite React frontend concurrently:
+
 ```bash
-npm run start:dev
+npm run start:both
 ```
 
-Then open:
+Or you can run them separately:
+- **Backend (NestJS)**: `npm run start:dev` (runs on `http://localhost:3000`)
+- **Frontend (Vite)**: `npm run start:client` (runs on `http://localhost:5173`)
 
-- `http://localhost:3000/` — home page
-- `http://localhost:3000/register.html` — registration page
-- `http://localhost:3000/login.html` — login page
-- `http://localhost:3000/profile.html` — protected profile page
+Then open:
+- `http://localhost:5173/` — React frontend app
 
 ## How it works
 
-- register: `POST /auth/register`
+### API Endpoints
+- **Register**: `POST /auth/register`
   - accepts `{ email, password }`
   - rejects `.ru` email addresses
-- login: `POST /auth/login`
+- **Login**: `POST /auth/login`
   - returns `{ access_token }`
-- profile: `GET /auth/me`
+- **Profile**: `GET /auth/me`
   - requires `Authorization: Bearer <token>`
 
-The frontend stores the token in `localStorage` and uses it to access `/auth/me` from `profile.html`.
+### Frontend Architecture
+The front-end is built using React, React Router, and Mantine for UI components.
+- State and views are handled in `src/client/`.
+- During development, Vite proxies `/auth` requests to the NestJS server.
+- The UI handles user token storage and navigation natively as a SPA (Single Page Application).
 
-## Frontend pages
+## Build for production
 
-Static UI files are served from the `public/` folder:
-
-- `public/index.html`
-- `public/register.html`
-- `public/login.html`
-- `public/profile.html`
-- `public/styles.css`
-
-## Notes
-
-- User data is stored in memory only.
-- This app is meant for local development and demo purposes.
-- Tests are not modified in this documentation update.
+```bash
+npm run build
+```
+This builds both the NestJS app and Vite frontend (which outputs to the `public/` directory so NestJS can serve it statically on port 3000).
 
 ## Tests
 
@@ -94,7 +68,6 @@ npm run test:e2e
 ```
 
 Current test cases include:
-
 - `POST Register - SUCCESS`
 - `POST Register - FAIL duplicate email`
 - `POST Register - FAIL ru email address`
@@ -107,14 +80,5 @@ Current test cases include:
 - `GET Token - FAIL missing token`
 - `GET Token - FAIL invalid token`
 - `GET Token - FAIL expired token`
-
-## Commands
-
-```bash
-npm install
-npm run start:dev
-```
-
----
 
 For now, keep the existing test files unchanged and use this README for setup and usage instructions.
