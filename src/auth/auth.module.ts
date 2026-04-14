@@ -28,5 +28,6 @@ import { CustomAuthGuard } from './guards/custom.guard';
   ],
   controllers: [AuthController],
   providers: [AuthService, CustomAuthGuard],
+  exports: [AuthService]
 })
 export class AuthModule {}

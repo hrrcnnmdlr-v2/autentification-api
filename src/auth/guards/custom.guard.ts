@@ -3,12 +3,13 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class CustomAuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(@Inject(JwtService) private jwtService: JwtService,) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -21,7 +22,8 @@ export class CustomAuthGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync(token);
       request.user = payload;
-    } catch {
+    } catch (e: any) {
+      console.log('Guard rejected token. Reason:', e.message);
       throw new UnauthorizedException('Invalid or expired token');
     }
 

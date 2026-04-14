@@ -22,19 +22,34 @@ export default function ProfilePage() {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-
+    let isMounted = true;
+    
     const fetchProfile = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       try {
         const { data } = await api.get('/auth/me');
-        setUser(data);
-      } catch (error) {
-        console.error('Failed to load profile');
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setUser(data);
+          setLoading(false);
+        }
+      } catch (error: any) {
+        if (isMounted && error.response?.status !== 401) {
+          console.error('Profile load failed');
+          setLoading(false);
+        }
       }
     };
 
     fetchProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, [navigate]);
 
   const handleLogout = () => {

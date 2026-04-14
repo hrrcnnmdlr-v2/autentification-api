@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
-import api from '../api/axios';
+import api, { publicApi } from '../api/axios';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -32,8 +32,9 @@ export default function LoginPage() {
   const handleSubmit = async (values: typeof form.values) => {
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/login', values);
+      const { data } = await publicApi.post('/auth/login', values);
       localStorage.setItem('token', data.access_token);
+      localStorage.setItem('refreshToken', data.refresh_token);
       navigate('/profile');
     } catch (err: any) {
       const message =

@@ -14,7 +14,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useNavigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
-import api from '@/client/api/axios';
+import api, { publicApi } from '@/client/api/axios';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function RegisterPage() {
   const handleSubmit = async (values: typeof form.values) => {
     setLoading(true);
     try {
-      await api.post('/auth/register', values);
+      const { data } = await publicApi.post('/auth/register', values);
       notifications.show({
         title: 'Success!',
         message: 'Account created successfully. Please login.',
